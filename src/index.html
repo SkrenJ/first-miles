@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>First Miles Running Club – Lauftraining & Personal Coaching</title>
+  <meta name="description" content="First Miles Running Club in Wuppertal: Laufkurs für Einsteiger:innen, Personal Coaching, individuelle Trainingspläne. Treffpunkte u. a. Nordbahntrasse & Laufplatz Oberbergische Straße." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* === Design Tokens (Farben von Marius) === */
+    :root{
+      --bg:#1d2843;           /* dunkles Blau */
+      --panel:#3e5c5d;        /* gedämpftes Türkis/Teal */
+      --accent:#7fff00;       /* Neon‑Grün (CTAs) */
+      --accent-2:#aec347;     /* Oliv‑Grün (Akzente) */
+      --text:#e8f3ff;         /* helle Schrift */
+      --muted:#bfd0e6;        /* sekundärer Text */
+      --radius:18px;
+      --shadow:0 12px 28px rgba(0,0,0,.35);
+      --ring:0 0 0 3px rgba(127,255,0,.35);
+      --maxw:1100px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+
+    /*
+      Hintergrund‑Fix:
+      - Body bekommt eine SOLIDE Grundfarbe (var(--bg))
+      - Das visuelle Gradient‑Design liegt als FIXIERTES Overlay auf body::before,
+        damit es beim Scrollen nicht sichtbar „kachelt“ oder abrupte Cuts zeigt.
+    */
+    body{
+      margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial;
+      color:var(--text);
+      background: var(--bg);
+      line-height:1.6;
+    }
+    body::before{
+      content:"";
+      position: fixed; /* bleibt viewport‑fixiert, kein Wiederanfang beim Scrollen */
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(1400px 1000px at 10% -10%, rgba(62,92,93,.35), transparent 60%),
+        radial-gradient(1400px 1000px at 110% 0%, rgba(174,195,71,.20), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0) 25%),
+        var(--bg);
+      /* Performance‑Hinweis: fixed + will-change, damit weich scrollt */
+      will-change: transform;
+    }
+
+    img{max-width:100%;display:block}
+    a{color:inherit;text-decoration:none}
+    .container{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 20px}
+
+    .btn{display:inline-flex;align-items:center;gap:.6rem;border:none;border-radius:14px;padding:.9rem 1.2rem;font-weight:800;cursor:pointer;transition:.2s ease transform,.2s ease filter}
+    .btn:focus-visible{outline:none;box-shadow:var(--ring)}
+    .btn-primary{background:linear-gradient(180deg,var(--accent),#62d500);color:#0a1600}
+    .btn-primary:hover{filter:brightness(1.05);transform:translateY(-1px)}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--muted)}
+    .btn-ghost:hover{border-color:var(--accent);color:#f5ffe6}
+
+    header{position:sticky;top:0;z-index:40;backdrop-filter:saturate(160%) blur(8px);background:linear-gradient(180deg, rgba(13,22,41,.9) 0%, rgba(13,22,41,.4) 100%);border-bottom:1px solid rgba(255,255,255,.06)}
+    .nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+    .brand{display:flex;align-items:center;gap:.7rem;font-weight:900;letter-spacing:.2px}
+    .logo{width:38px;height:38px;border-radius:12px;background:conic-gradient(from 210deg, var(--accent), var(--accent-2));box-shadow:0 0 0 3px rgba(127,255,0,.18)}
+    nav ul{display:flex;gap:1rem;list-style:none;padding:0;margin:0}
+    nav a{padding:.5rem .75rem;border-radius:10px;color:var(--muted)}
+    nav a:hover,nav a:focus-visible{background:rgba(255,255,255,.06);color:#fff}
+
+    .hero{position:relative;padding:84px 0 60px}
+    .hero-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center}
+    .eyebrow{color:var(--accent-2);text-transform:uppercase;letter-spacing:.14em;font-weight:800;font-size:.8rem}
+    h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.1;margin:.4rem 0 1rem;font-weight:900}
+    .lead{font-size:clamp(1rem,1.8vw,1.15rem);color:#e6ffd6;max-width:60ch}
+    .hero-cta{margin-top:1.4rem;display:flex;gap:.8rem;flex-wrap:wrap}
+    .hero-card{border-radius:var(--radius);background:linear-gradient(180deg, rgba(174,195,71,.12), rgba(62,92,93,.10));border:1px solid rgba(255,255,255,.10);box-shadow:var(--shadow);padding:20px}
+
+    section{padding:74px 0}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin-bottom:28px}
+    .section-title{font-size:clamp(1.4rem,3vw,2rem);margin:0}
+    .section-sub{color:var(--muted);max-width:60ch}
+
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+    .card{background:linear-gradient(180deg, rgba(10,16,28,.85), rgba(10,16,28,.65));border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+    .price{font-size:2.1rem;font-weight:900;letter-spacing:.2px}
+    .per{color:var(--muted);font-weight:700;font-size:.95rem}
+    .badge{display:inline-block;padding:.25rem .6rem;border-radius:999px;background:rgba(174,195,71,.25);color:#213000;font-weight:800;font-size:.75rem}
+    .features{margin:12px 0 18px;padding:0;list-style:none}
+    .features li{display:flex;align-items:flex-start;gap:.6rem;margin:.5rem 0}
+    .check{width:20px;height:20px;display:inline-grid;place-items:center;flex:0 0 20px;border-radius:50%;background:linear-gradient(180deg, var(--accent), #62d500);color:#0b2000;font-weight:900}
+
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .step{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);padding:18px}
+    .step h3{margin:.2rem 0 .4rem;font-size:1.1rem}
+    .step p{color:var(--muted)}
+    .step-num{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-weight:900;background:linear-gradient(180deg, var(--accent), #62d500);color:#0b2000}
+
+    .testis{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .quote{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:18px;font-size:.98rem}
+    .quote strong{color:white}
+
+    details{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:14px 16px}
+    details+details{margin-top:10px}
+    summary{cursor:pointer;font-weight:800}
+    details[open]{box-shadow:var(--shadow)}
+
+    .contact-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:24px}
+    form{display:grid;gap:12px}
+    label{font-weight:800;font-size:.95rem}
+    input,textarea,select{width:100%;padding:.85rem 1rem;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:#121b31;color:#f2ffe6}
+    input:focus,textarea:focus,select:focus{outline:none;box-shadow:var(--ring);border-color:var(--accent)}
+    .legal{font-size:.85rem;color:var(--muted)}
+    .success{display:none;background:linear-gradient(180deg, rgba(174,195,71,.16), rgba(127,255,0,.14));border:1px solid rgba(174,195,71,.45);border-radius:var(--radius);padding:14px;color:#f3ffe6;font-weight:800}
+
+    footer{padding:40px 0;color:var(--muted);border-top:1px solid rgba(255,255,255,.08)}
+
+    @media (max-width: 1024px){ .cards{grid-template-columns:1fr 1fr} }
+    @media (max-width: 920px){
+      .hero-grid{grid-template-columns:1fr;gap:22px}
+      .cards{grid-template-columns:1fr}
+      .steps{grid-template-columns:1fr}
+      .testis{grid-template-columns:1fr}
+      .contact-grid{grid-template-columns:1fr}
+      .nav ul{display:none}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav" role="navigation" aria-label="Hauptnavigation">
+      <div class="brand">
+        <!-- Logo‑Platzhalter: bitte Datei ersetzen -->
+        <img class="logo" src="assets/logo-placeholder.svg" alt="First Miles Running Club Logo" />
+        <a href="#top" class="brand-name" aria-label="Zur Startseite">First Miles Running Club</a>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#angebote">Angebote</a></li>
+          <li><a href="#ablauf">Ablauf</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#kontakt">Kontakt</a></li>
+        </ul>
+      </nav>
+      <button class="btn btn-primary" id="ctaHeader">Jetzt anfragen</button>
+    </div>
+  </header>
+
+  <main id="top" class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow">Lauftraining · Wuppertal</div>
+        <h1>Deine ersten Meilen. Dein neuer Start.</h1>
+        <p class="lead"><em>You never look better than after your first miles.</em> – Einsteigerfreundlicher 12‑Wochen‑Kurs mit wöchentlicher Session oder ein <strong>individueller Trainingsplan</strong> für zu Hause. Motivation, Struktur und spürbare Fortschritte in 12 Wochen.</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary" id="ctaHero">Kostenloses Erstgespräch</button>
+          <a class="btn btn-ghost" href="#angebote">Pakete ansehen</a>
+        </div>
+      </div>
+      <aside class="hero-card" aria-label="Highlights">
+        <ul>
+          <li>✔ Für Einsteiger:innen & Wiedereinsteiger</li>
+          <li>✔ Technik- & Laufstil-Coaching</li>
+          <li>✔ Planungs‑Check‑ins alle 2 Wochen</li>
+          <li>✔ Treffpunkte: Nordbahntrasse & Laufplatz Oberbergische Straße</li>
+        </ul>
+        <!-- Hero‑Bild Platzhalter -->
+        <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px dashed rgba(255,255,255,.25);padding:18px;text-align:center;color:var(--muted)">Hero‑Bild Platzhalter (Foto später einsetzen)</div>
+      </aside>
+    </div>
+  </main>
+
+  <section id="angebote" class="container">
+    <div class="section-head">
+      <h2 class="section-title">Angebote</h2>
+      <p class="section-sub">Transparent, fair und zielorientiert – wähle das Paket, das zu dir passt.</p>
+    </div>
+
+    <div class="cards" role="list">
+      <article class="card" role="listitem" aria-label="12‑Wochen Laufkurs">
+        <div class="badge">Beliebt</div>
+        <h3>12‑Wochen Laufkurs (Einsteiger)</h3>
+        <div class="price">150&nbsp;€ <span class="per">/ 12 Wochen</span></div>
+        <ul class="features" aria-label="Leistungsumfang">
+          <li><span class="check">✓</span><span>1× wöchentlich gemeinsames Lauftraining (60–75 min)</span></li>
+          <li><span class="check">✓</span><span>Individueller Trainingsplan für 12 Wochen</span></li>
+          <li><span class="check">✓</span><span>Technik‑ & Mobilitätsübungen</span></li>
+          <li><span class="check">✓</span><span>Fortschritts‑Check alle 2 Wochen</span></li>
+        </ul>
+        <button class="btn btn-primary plan-btn" data-plan="Laufkurs 12 Wochen – 150 €">Platz anfragen</button>
+      </article>
+
+      <article class="card" role="listitem" aria-label="Nur Trainingsplan">
+        <h3>Nur Trainingsplan</h3>
+        <div class="price">90&nbsp;€ <span class="per">/ einmalig</span></div>
+        <ul class="features" aria-label="Leistungsumfang">
+          <li><span class="check">✓</span><span>Individueller 12‑Wochen‑Plan (Ziel, Alltag, Historie)</span></li>
+          <li><span class="check">✓</span><span>2 Plan‑Updates (bei Bedarf)</span></li>
+          <li><span class="check">✓</span><span>Feedback‑Call (30 min)</span></li>
+        </ul>
+        <button class="btn btn-primary plan-btn" data-plan="Nur Trainingsplan – 90 €">Plan anfragen</button>
+      </article>
+
+      <article class="card" role="listitem" aria-label="Gruppentraining">
+        <div class="badge">Neu</div>
+        <h3>Gruppentraining (bis 6 Personen)</h3>
+        <div class="price">ab&nbsp;500&nbsp;€ <span class="per">/ 12 Termine</span></div>
+        <ul class="features" aria-label="Leistungsumfang">
+          <li><span class="check">✓</span><span>Gemeinsame Lauf‑Sessions (60 min) – Termin nach Absprache</span></li>
+          <li><span class="check">✓</span><span>Optional: individuelle Pläne pro Person</span></li>
+          <li><span class="check">✓</span><span>Ideal für Vereine, Teams & Freundesgruppen</span></li>
+        </ul>
+        <button class="btn btn-primary plan-btn" data-plan="Gruppentraining – Preis nach Absprache">Anfrage zur Gruppe</button>
+      </article>
+    </div>
+  </section>
+
+  <section id="ablauf" class="container">
+    <div class="section-head">
+      <h2 class="section-title">So läuft’s ab</h2>
+      <p class="section-sub">Vom Erstgespräch bis zu deinen Ziel‑Kilometern – klar und machbar.</p>
+    </div>
+    <div class="steps" role="list">
+      <div class="step" role="listitem">
+        <div class="step-num">1</div>
+        <h3>Erstgespräch (kostenlos)</h3>
+        <p>Kurze Anamnese (auf Wunsch inkl. Daten aus deiner Laufuhr), Ziele & Zeitbudget. Wir finden das passende Paket.</p>
+      </div>
+      <div class="step" role="listitem">
+        <div class="step-num">2</div>
+        <h3>Plan‑Erstellung</h3>
+        <p>Individueller 12‑Wochen‑Plan: Einheiten, Intensitäten, Ruhetage – abgestimmt auf deinen Alltag.</p>
+      </div>
+      <div class="step" role="listitem">
+        <div class="step-num">3</div>
+        <h3>Training & Check‑ins</h3>
+        <p>Wöchentliche Session (im Kurs) + Fortschritts‑Checks alle 2 Wochen, ggf. Plan‑Feinschliff.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <strong>Aktuelle Lauftreffs (Wuppertal):</strong>
+      <ul>
+        <li><strong>Montags 18:00 – First Miles</strong> · Pace ca. 7:30–8:00 min/km · ca. 60 min</li>
+        <li><strong>Montags 18:00 – Second Miles</strong> · Pace ca. 6:00–6:30 min/km · ca. 60 min</li>
+        <li>Treffpunkte: Nordbahntrasse, Laufplatz Oberbergische Straße – weitere Orte nach Absprache.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="section-head">
+      <h2 class="section-title">Stimmen von Teilnehmenden</h2>
+      <p class="section-sub">Echte Erfahrungen aus dem Kurs.</p>
+    </div>
+    <div class="testis" role="list">
+      <blockquote class="quote" role="listitem">„Nach 12 Wochen bin ich meine erste 10 km unter 60 Minuten gelaufen. <strong>Plan + Technik‑Tipps</strong> waren gold wert!“ — Lea</blockquote>
+      <blockquote class="quote" role="listitem">„Super motivierende Gruppe, aber nie überfordert. Progress klar spürbar!“ — Jonas</blockquote>
+      <blockquote class="quote" role="listitem">„Nur den Plan gebucht – perfekt in den Familienalltag integrierbar. 5‑Sterne!“ — Miriam</blockquote>
+    </div>
+  </section>
+
+  <section id="faq" class="container">
+    <div class="section-head">
+      <h2 class="section-title">FAQ</h2>
+      <p class="section-sub">Kurze Antworten auf häufige Fragen.</p>
+    </div>
+    <details>
+      <summary>Wo findet das Lauftraining statt?</summary>
+      <p>Nordbahntrasse oder Laufplatz Oberbergische Straße (Wuppertal). Auf Wunsch auch andere Orte bzw. Hausbesuche/Anfahrt zur Gruppe.</p>
+    </details>
+    <details>
+      <summary>Welche Voraussetzungen brauche ich?</summary>
+      <p>Du solltest 20–30 min zügig gehen/joggen können. Bei Beschwerden bitte vorher medizinisch abklären.</p>
+    </details>
+    <details>
+      <summary>Gibt es unterschiedliche Tempostufen?</summary>
+      <p>Ja. Aktuell: <em>First Miles</em> (Pace ~7:30–8:00) und <em>Second Miles</em> (Pace ~6:00–6:30). Inhalte werden an das Gruppenniveau angepasst.</p>
+    </details>
+    <details>
+      <summary>Ernährung & Lifestyle?</summary>
+      <p>Keine Ernährungsberatung im rechtlichen Sinne. Du erhältst gern allgemeine Lifestyle‑Hinweise rund um Regeneration, Schlaf & Motivation.</p>
+    </details>
+  </section>
+
+  <section id="kontakt" class="container">
+    <div class="section-head">
+      <h2 class="section-title">Anfrage</h2>
+      <p class="section-sub">Schreib kurz dein Ziel – wir melden uns in der Regel innerhalb von 24 Stunden.</p>
+    </div>
+    <div class="contact-grid">
+      <form id="contactForm" aria-label="Kontaktformular">
+        <div class="success" id="successMsg" role="status">Danke! Deine Anfrage ist bei uns eingegangen.</div>
+        <div>
+          <label for="name">Name</label>
+          <input id="name" name="name" autocomplete="name" required placeholder="Max Mustermann" />
+        </div>
+        <div>
+          <label for="email">E‑Mail</label>
+          <input id="email" name="email" type="email" autocomplete="email" required placeholder="max@example.com" />
+        </div>
+        <div>
+          <label for="phone">Telefon (optional)</label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="0151…" />
+        </div>
+        <div>
+          <label for="offer">Paket</label>
+          <select id="offer" name="offer">
+            <option value="Kurs">12‑Wochen Laufkurs – 150 €</option>
+            <option value="Plan">Nur Trainingsplan – 90 €</option>
+            <option value="Gruppe">Gruppentraining (bis 6 Personen) – ab 500 €</option>
+            <option value="Unsicher">Unsicher – bitte beraten</option>
+          </select>
+        </div>
+        <div>
+          <label for="goal">Ziel</label>
+          <textarea id="goal" name="goal" rows="4" placeholder="z. B. 5 km durchlaufen, bessere Technik, schmerzfrei werden…"></textarea>
+        </div>
+        <div>
+          <button class="btn btn-primary" type="submit">Anfrage senden</button>
+          <button class="btn btn-ghost" type="reset">Zurücksetzen</button>
+        </div>
+        <p class="legal">Mit dem Absenden stimmst du der Kontaktaufnahme per E‑Mail/Telefon zu. Es werden keine Daten an Dritte weitergegeben.</p>
+      </form>
+      <aside>
+        <div class="card">
+          <h3>Kontakt</h3>
+          <p>E‑Mail: <a href="mailto:hello@firstmiles.example">hello@firstmiles.example</a><br/>Telefon: <a href="tel:+491234567890">+49&nbsp;123&nbsp;4567890</a></p>
+          <hr style="border-color: rgba(255,255,255,.08)">
+          <p><strong>Probestunde?</strong> Schreib „Probe“ ins Nachrichtenfeld – wir melden uns mit Terminvorschlägen.</p>
+          <!-- Bild-Platzhalter -->
+          <div style="margin-top:12px;border-radius:14px;overflow:hidden;border:1px dashed rgba(255,255,255,.25);padding:18px;text-align:center;color:var(--muted)">Coach‑Foto Platzhalter</div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+      <small>© <span id="year"></span> First Miles Running Club – Lauftraining & Coaching</small>
+      <small><a href="#top">Nach oben ↑</a></small>
+    </div>
+  </footer>
+
+  <script>
+    const byId = (id)=>document.getElementById(id);
+    const qsa = (sel)=>Array.from(document.querySelectorAll(sel));
+
+    function scrollToEl(id){ const el = byId(id); if(!el) return; el.scrollIntoView({behavior:'smooth', block:'start'}); }
+
+    byId('ctaHeader').addEventListener('click', ()=> scrollToEl('kontakt'));
+    byId('ctaHero').addEventListener('click', ()=> scrollToEl('kontakt'));
+
+    qsa('.plan-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const select = byId('offer');
+        const label = btn.dataset.plan || '';
+        if(label.includes('Nur Trainingsplan')) select.value='Plan';
+        else if(label.includes('Laufkurs')) select.value='Kurs';
+        else if(label.includes('Gruppentraining')) select.value='Gruppe';
+        else select.value='Unsicher';
+        scrollToEl('kontakt');
+      });
+    });
+
+    const form = byId('contactForm');
+    const success = byId('successMsg');
+
+    form.addEventListener('submit', (ev)=>{
+      ev.preventDefault();
+      const name = form.name.value.trim();
+      const email = form.email.value.trim();
+      if(!name || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        alert('Bitte Name und eine gültige E‑Mail angeben.');
+        return;
+      }
+      success.style.display = 'block';
+      form.reset();
+    });
+
+    byId('year').textContent = new Date().getFullYear();
+
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape'){
+        document.querySelectorAll('details[open]').forEach(d=> d.removeAttribute('open'));
+      }
+    });
+  </script>
+</body>
+</html>
